@@ -20,6 +20,9 @@ The evernote timing synchronization to wordpress.
 Plugin Site:
 http://www.biliyu.com/evernote-sync
 
+Author Email:
+tanggaowei@foxmail.com
+
 == Installation ==
 
 1. Upload `evernote-sync` folder to the `/wp-content/plugins/` directory
