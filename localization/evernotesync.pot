@@ -1,0 +1,54 @@
+# EvernoteSync 1.0.0
+# Copyright (c) 2015 Gaowei Tang
+# This file is distributed under the same license as the EvernoteSync package.
+
+msgid ""
+msgstr ""
+"Project-Id-Version: EvernoteSync 1.0.0\n"
+"Report-Msgid-Bugs-To: http://www.yongdui.com/"
+"EvernoteSync/\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2015-05-14 14:24+0800\n"
+"Last-Translator: tanggaowei <tanggaowei@foxmail.com>\n"
+"Language-Team: tanggaowei(http://yongdui.com) <tanggaowei@foxmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Generator: Poedit 1.5.7\n"
+
+msgid "EvernoteSync"
+msgstr ""
+
+msgid "EvernoteSync Plugin Options"
+msgstr ""
+
+msgid "Platform"
+msgstr ""
+
+msgid "Yinxiang"
+msgstr ""
+
+msgid "Evernote"
+msgstr ""
+
+msgid "Developer Token"
+msgstr ""
+
+msgid "Get a developer token from: <a href=\"https://www.evernote.com/api/DeveloperToken.action\" target=\"_blank\">Evernote Developer Token</a> or <a href=\"https://app.yinxiang.com/api/DeveloperToken.action\" target=\"_blank\">Yinxiang Developer Token</a>."
+msgstr ""
+
+msgid "Save Options"
+msgstr ""
+
+msgid "Manual Sync"
+msgstr ""
+
+msgid "The last synchronization time"
+msgstr ""
+
+msgid "Next time"
+msgstr ""
+
+msgid "Explain: Sync with \"posts\" tag notes"
+msgstr ""
