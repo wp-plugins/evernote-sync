@@ -1,4 +1,4 @@
-=== Akismet ===
+=== Evernote Sync ===
 Contributors: tanggaowei
 Tags: evernote, sync
 Requires at least: 3.2
