@@ -17,6 +17,9 @@ The evernote timing synchronization to wordpress.
 5. The same name tags of Evernote synchronization into WordPress categories;
 6. Other Evernote tags are all synchronized to the WordPress label. (except for "posts")
 
+Plugin Site:
+http://www.biliyu.com/evernote-sync
+
 == Installation ==
 
 1. Upload `evernote-sync` folder to the `/wp-content/plugins/` directory
