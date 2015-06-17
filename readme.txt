@@ -1,5 +1,5 @@
 === Evernote Sync ===
-Contributors: tanggaowei
+Contributors: tgw365
 Tags: evernote, sync
 Requires at least: 3.2
 Tested up to: 4.1.1
