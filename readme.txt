@@ -24,3 +24,6 @@ http://www.biliyu.com/evernote-sync
 
 1. Upload `evernote-sync` folder to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
+3. Go to "Settings > Evernote Sync", select the platform and developer token, then save;
+4. To the need to synchronize the notes add "posts" tag;
+5. You can also go to the Settings page of plugin to manually synchronize.
