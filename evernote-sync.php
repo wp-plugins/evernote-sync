@@ -3,7 +3,7 @@
 Plugin Name: Evernote Sync
 Plugin URI: http://www.biliyu.com/evernote-sync
 Description: The evernote timing synchronization to wordpress.
-Version: 1.0.1
+Version: 1.0.2
 Author: Gaowei Tang
 Author URI: http://www.tanggaowei.com/
 Text Domain: evernotesync
