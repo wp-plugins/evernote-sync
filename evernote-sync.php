@@ -302,10 +302,8 @@ class EvernoteSyncLoader {
           
           // 删除印象笔记的隐藏标签
           $content = preg_replace('/<center[^>]*?display[^>]*?>[\s\S]*?<\/center>/ims', '', $content);
-
-          // 清除印象笔记多余标签
-          $content = preg_replace('/<div[^>]*?>\s*<\/div>/ims', '', $content);
-          $content = preg_replace('/<div[^>]*?\/>/ims', '', $content);          
+          // 清除所有DIV标签
+          $content = preg_replace('/<[\/]*?div[^>]*?>/ims', '', $content);         
           // 清除标签的 style 属性
           $content = preg_replace('/ style="[^"]*?"/ims', '', $content);
           $content = preg_replace('/ style=\'[^\']*?\'/ims', '', $content);
