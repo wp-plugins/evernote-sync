@@ -3,7 +3,7 @@
 Plugin Name: Evernote Sync
 Plugin URI: http://www.biliyu.com/evernote-sync
 Description: The evernote timing synchronization to wordpress.
-Version: 1.0.2
+Version: 1.0.3
 Author: Gaowei Tang
 Author URI: http://www.tanggaowei.com/
 Text Domain: evernotesync
@@ -241,6 +241,9 @@ class EvernoteSyncLoader {
           $noteUpdated = $result->updated;
 
           // 判断文章是否更新
+          $featureid = null; // 特征图ID
+          $postid = null;
+          $post = null;
           $record = null;
           $exist = false;
           $records = $wpdb->get_results("SELECT postid, updated FROM $table_name where guid='$noteGuid'");  
@@ -257,9 +260,10 @@ class EvernoteSyncLoader {
 
 
           if( is_array($note->resources) ){
-            // 声明数组 
+            // 声明数组
             $img_array = array(); 
-            foreach( $note->resources as $resource ) {		 
+            for($i=0; $i<count($note->resources); $i++){ 
+              $resource = $note->resources[$i];
               $bin = unpack("H*" , $resource->data->bodyHash);
               $hash = $bin[1];
               $filename = $resource->attributes->fileName;
@@ -269,8 +273,26 @@ class EvernoteSyncLoader {
               // 记录图片的URL
               $img_array[$hash] = $baseurl . $filename;
               if(!file_exists($filepath)) {
-                // Upload the file   
+                // 上传图片
                 file_put_contents($filepath, $resource->data->body,LOCK_EX);
+                // 插数据库生成预览图
+		        	  $wp_filetype = wp_check_filetype(basename($filepath), null );
+                $wp_upload_dir = wp_upload_dir();
+                $attachment = array(
+                     'guid' => $wp_upload_dir['url'] . '/' . basename( $filepath ), 
+                     'post_mime_type' => $wp_filetype['type'],
+                     'post_title' => preg_replace( '/\.[^.]+$/', '', basename( $filepath ) ),
+                     'post_content' => '',
+                     'post_status' => 'inherit'
+                );
+                $attach_id = wp_insert_attachment( $attachment, $filepath, $postid );
+                require_once( ABSPATH . 'wp-admin/includes/image.php' );
+                $attach_data = wp_generate_attachment_metadata( $attach_id, $filepath );
+                wp_update_attachment_metadata( $attach_id, $attach_data );
+                // 设置文章的特征图
+                if($featureid == null){
+                  $featureid = $attach_id;
+                }
               }
             }
           }
@@ -317,8 +339,6 @@ class EvernoteSyncLoader {
           }
           
           // 获取文章
-          $postid = null;
-          $post = null;
           if($exist){
             $postid = $record->postid;
             $post = get_post($postid);
@@ -386,7 +406,12 @@ class EvernoteSyncLoader {
             );
           }
           else{
-            $wpdb->insert($table_name,array( 'postid' => $postid, 'title' => $noteTitle, 'guid' => $noteGuid, 'created' => $noteCreated, 'updated' => $noteUpdated ) );
+            $wpdb->insert($table_name,array( 'postid' => $postid, 'title' => $noteTitle, 'guid' => $noteGuid, 'created' => $noteCreated, 'updated' => $noteUpdated ) );            
+          }
+
+          // 设置特征图
+          if($featureid != null){
+            set_post_thumbnail( $postid, $featureid );
           }
       }
     }
