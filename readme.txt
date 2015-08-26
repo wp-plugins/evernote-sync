@@ -4,7 +4,7 @@ Tags: evernote, sync
 Requires at least: 3.2
 Tested up to: 4.1.1
 Stable tag: 3.2
-License: 1.0.3
+License: 1.1.0
 
 The evernote timing synchronization to wordpress.
 

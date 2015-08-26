@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: QuickTagDialog 1.0.0\n"
 "Report-Msgid-Bugs-To: http://www.yongdui.com/EvernoteSync/\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-05-29 21:51+0800\n"
+"PO-Revision-Date: 2015-08-24 23:28+0800\n"
 "Last-Translator: tanggaowei <tanggaowei@foxmail.com>\n"
 "Language-Team: tanggaowei(http://yongdui.com) <tanggaowei@foxmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -20,6 +20,30 @@ msgstr "Evernote 同步"
 
 msgid "EvernoteSync Plugin Options"
 msgstr "Evernote 同步插件选项"
+
+msgid "Publish Mode"
+msgstr "发布方式"
+
+msgid "published"
+msgstr "发布"
+
+msgid "draft"
+msgstr "草稿"
+
+msgid "timed"
+msgstr "定时"
+
+msgid "Every Day"
+msgstr "每天"
+
+msgid "e.g."
+msgstr "例如"
+
+msgid "Time format is error!"
+msgstr "时间格式不正确！"
+
+msgid "Save success."
+msgstr "保存成功。"
 
 msgid "Platform"
 msgstr "平台"

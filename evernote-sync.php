@@ -3,7 +3,7 @@
 Plugin Name: Evernote Sync
 Plugin URI: http://www.biliyu.com/evernote-sync
 Description: The evernote timing synchronization to wordpress.
-Version: 1.0.3
+Version: 1.1.0
 Author: Gaowei Tang
 Author URI: http://www.tanggaowei.com/
 Text Domain: evernotesync
@@ -113,19 +113,62 @@ class EvernoteSyncLoader {
     if ( isset( $_POST[ 'sync' ] ) ) {
       EvernoteSyncLoader::sync();
     }
-
-    if ( isset( $_POST[ 'submit' ] ) ) {
-      update_option('evernotesync_platform',$_POST['evernotesync_platform']);
-      update_option('evernotesync_token',$_POST['evernotesync_token']);
-    }
     ?>
-
+    <script>
+      jQuery(document).ready(function(){
+        jQuery('#publishMode').change(function(){
+          if(jQuery(this).val() == 3){
+            jQuery('#timedSpan').show();
+          }
+          else{
+            jQuery('#timedSpan').hide();
+          }
+        });
+      });
+    </script>
     <div class="wrap">
       <?php screen_icon(); ?>
       <h2><?php _e('EvernoteSync Plugin Options', 'evernotesync') ?></h2>		
+      <?php
+      $mode = get_option('evernotesync_publish_mode');
+      if ( isset( $_POST[ 'submit' ] ) ) {
+        update_option('evernotesync_platform',$_POST['evernotesync_platform']);
+        update_option('evernotesync_token',$_POST['evernotesync_token']);
+        $mode = $_POST['evernotesync_publish_mode'];        
+        if($mode == 3){
+          $time = $_POST['evernotesync_timed_time'];
+          update_option('evernotesync_timed_time',$time);
+          $patten = "/^(0?[0-9]|1[0-9]|2[0-3])\:(0?[0-9]|[1-5][0-9])$/";
+          if (preg_match ( $patten, $time )) {
+                update_option('evernotesync_publish_mode',$mode);
+                ?><div class="updated"><?php _e('Save success.', 'evernotesync') ?></div><?php
+          } else {
+                update_option('evernotesync_publish_mode',2);
+                ?><div class="error"><?php _e('Time format is error!', 'evernotesync') ?></div><?php
+          }
+        }
+        else{
+          update_option('evernotesync_publish_mode',$mode);
+                ?><div class="updated"><?php _e('Save success.', 'evernotesync') ?></div><?php
+        }
+      }?>
       <div><br/><?php _e( 'Explain: Sync with "posts" tag notes', 'evernotesync' ) ?></div>
       <form action="" method="post">
       <table width="100%" class="form-table">
+            <tr valign="top">
+              <th scope="row"><label for="evernotesync_lines_to_scroll"><?php _e('Publish Mode', 'evernotesync') ?>:</label></th>
+              <td>
+                <select id="publishMode" name="evernotesync_publish_mode">
+                  <option value="1"<?php if($mode==1) echo ' selected'; ?>><?php _e('published', 'evernotesync') ?></option>
+                  <option value="2"<?php if($mode==2) echo ' selected'; ?>><?php _e('draft', 'evernotesync') ?></option>
+                  <option value="3"<?php if($mode==3) echo ' selected'; ?>><?php _e('timed', 'evernotesync') ?></option>
+                </select>
+                <span id="timedSpan"<?php if($mode!=3) echo ' style="display:none;"'; ?>>
+                <?php _e('Every Day', 'evernotesync') ?>&nbsp;<input name="evernotesync_timed_time" type="text" size="10" value="<?php echo get_option('evernotesync_timed_time')?>"/>
+                (<?php _e('e.g.', 'evernotesync') ?>, 7:00)
+                </span>
+              </td>
+            </tr>
             <tr valign="top">
               <th scope="row"><label for="evernotesync_lines_to_scroll"><?php _e('Platform', 'evernotesync') ?>:</label></th>
               <td>
@@ -162,7 +205,8 @@ class EvernoteSyncLoader {
     <div><?php _e( 'Next time', 'evernotesync' ) ?>: <?php
         date_default_timezone_set(get_option('timezone_string')); 
         echo date("Y-m-d H:i:s", wp_next_scheduled( 'evernote_sync_cron' ));
-    ?></div>    
+    ?></div>   
+    <!--<div><?php echo get_option('evernotesync_log')?></div>-->
     <?php } ?>
 
     </div>
@@ -176,8 +220,40 @@ class EvernoteSyncLoader {
 
     $table_name = $wpdb->prefix . "evernote_sync_pots";
 
-    
-    update_option('evernotesync_last',date("Y-m-d H:i:s", current_time( 'timestamp')));
+    // 计算定时
+    $time = current_time( 'timestamp');
+    $laststr = get_option('evernotesync_last');
+    $mode = get_option('evernotesync_publish_mode');
+    $timedstr = get_option('evernotesync_timed_time');
+
+    // 保存最后一次同步时间
+    update_option('evernotesync_last',date("Y-m-d H:i:s", $time));
+
+    if($laststr && $mode && $timedstr){
+      if($mode == 3){
+        $lasttime = strtotime($laststr);
+        $datestr = date("Y-m-d ", $time);
+        $timedtime = strtotime($datestr . $timedstr . ':00');
+
+        $logstr = $logstr . $laststr;
+        $logstr = $logstr . '<br/>';
+        $logstr = $logstr . $datestr . $timedstr . ':00';
+        $logstr = $logstr . '<br/>';
+        $logstr = $logstr . date("Y-m-d H:i:s", $time);
+        if($timedtime < $lasttime || $timedtime >= $time){
+          $logstr = $logstr . 'false';
+        }
+        else{
+          $logstr = $logstr . 'true';
+        }
+
+        update_option('evernotesync_log',$logstr);
+
+        if($timedtime < $lasttime || $timedtime >= $time){
+            return;
+        }
+      }
+    }
 
     $token = get_option('evernotesync_token');
 
@@ -316,8 +392,6 @@ class EvernoteSyncLoader {
           $content = preg_replace('/<!DOCTYPE[^>]*?>/ims', '', $content);
           $content = preg_replace('/<en-note[^>]*?>/ims', '', $content);
           $content = str_replace('</en-note>', '', $content);
-          //$content = str_replace("<div  style=\"color: #2c3f51; font-family: 'Helvetica Neue', Arial, 'Hiragino Sans GB', STHeiti, 'Microsoft YaHei', 'WenQuanYi Micro Hei', SimSun, Song, sans-serif; line-height: 1.6;\">", '', $content);
-          
 
           // 删除印象笔记的 <del> 标签
           $content = preg_replace('/<del[^>]*?>[\s\S]*?<\/del>/ims', '', $content);
@@ -366,13 +440,17 @@ class EvernoteSyncLoader {
             }
           }        
 
-          // 没有找到文章，则新建          
-          if(is_null($post)){
+          // 没有找到文章，则新建 
+          if(is_null($post)){        
+            $publishMode = 'publish';
             // 创建 post 对象（数组）
+            if(get_option('evernotesync_publish_mode')==2){
+              $publishMode = 'draft';
+            }
             $my_post = array(
                'post_title' => $noteTitle,
                'post_content' => $content,
-               'post_status' => 'publish',
+               'post_status' => $publishMode,
                'post_author' => 1,
                'post_category' => $categoryIds,
                'tags_input' => array($tags)
@@ -387,7 +465,6 @@ class EvernoteSyncLoader {
                'ID' => $postid,
                'post_title' => $noteTitle,
                'post_content' => $content,
-               'post_status' => 'publish',
                'post_author' => 1,
                'post_category' => $categoryIds,
                'tags_input' => array($tags)
