@@ -16,6 +16,7 @@ The evernote timing synchronization to wordpress.
 4. Synchronous including categories, tags, titles, content and pictures contained;
 5. The same name tags of Evernote synchronization into WordPress categories;
 6. Other Evernote tags are all synchronized to the WordPress label. (except for "posts")
+7. Timed publish.
 
 Plugin Site:
 http://www.biliyu.com/evernote-sync
