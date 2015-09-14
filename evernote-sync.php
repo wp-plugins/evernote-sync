@@ -235,7 +235,7 @@ class EvernoteSyncLoader {
         $datestr = date("Y-m-d ", $time);
         $timedtime = strtotime($datestr . $timedstr . ':00');
 
-        $logstr = $logstr . $laststr;
+        $logstr = $laststr;
         $logstr = $logstr . '<br/>';
         $logstr = $logstr . $datestr . $timedstr . ':00';
         $logstr = $logstr . '<br/>';
